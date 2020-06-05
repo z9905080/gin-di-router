@@ -1,5 +1,5 @@
 # gin-di-router
-gin tool of dependency injection with router
+gin tool of controller methods injection with router
 
 ----
 
