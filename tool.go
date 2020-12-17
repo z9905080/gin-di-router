@@ -117,7 +117,7 @@ func (diRouter *GinDIRouter) Register(receiver interface{}) {
 }
 
 // RegisterWithGroup Register with gin Group.
-func (diRouter *GinDIRouter) RegisterWithGroup(receiver interface{}, group *gin.RouterGroup){
+func (diRouter *GinDIRouter) RegisterWithGroup(receiver interface{}, group *gin.RouterGroup) {
 	service := new(service)
 	service.typ = reflect.TypeOf(receiver)
 	service.rcvr = reflect.ValueOf(receiver)
@@ -129,6 +129,10 @@ func (diRouter *GinDIRouter) RegisterWithGroup(receiver interface{}, group *gin.
 		result := methodData.method.Func.Call([]reflect.Value{service.rcvr})
 		callAPIType := result[0].Interface().(APIType)
 		callMethod := result[1].Interface().([]gin.HandlerFunc)
+		if len(result) >= 3 {
+			callRouterPath := result[2].Interface().(string)
+			methodName = callRouterPath
+		}
 		newMethodName := ToSnakeCase(methodName)
 		switch callAPIType {
 		case Get:
@@ -171,8 +175,6 @@ func (diRouter *GinDIRouter) RegisterWithGroup(receiver interface{}, group *gin.
 		}
 	}
 }
-
-
 
 // suitableMethods returns suitable api methods of type, it will report
 // error using log if reportErr is true.
